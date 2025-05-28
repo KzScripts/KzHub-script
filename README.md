@@ -1,21 +1,23 @@
--- carregar OrionLib
-local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source"))()
+-- Carregar Fluent UI
+local Fluent = loadstring(game:HttpGet("https://raw.githubusercontent.com/LooseGames/Fluent/main/source.lua"))()
 
-local Window = OrionLib:MakeWindow({
-    Name = "Kz Hub | Universal",
-    HidePremium = false,
-    SaveConfig = true,
-    ConfigFolder = "KzHub"
+local Window = Fluent:CreateWindow({
+    Title = "Kz Hub | Universal",
+    SubTitle = "Script Universal com Fluent UI",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = true,
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.RightControl
 })
 
--- Variáveis de controle
+-- Variáveis
 local aimbotEnabled = false
 local playerESPEnabled = false
 local npcESPEnabled = false
 local FOV = 200
 local antiAFKEnabled = false
 
--- Funções auxiliares
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local RunService = game:GetService("RunService")
@@ -24,67 +26,58 @@ local VirtualInputManager = game:GetService("VirtualInputManager")
 local Camera = workspace.CurrentCamera
 local npcList = {}
 
--- Tabs e Seções
-local mainTab = Window:MakeTab({Name = "Main", Icon = "rbxassetid://4483345998", PremiumOnly = false})
-mainTab:AddSection({Name = "Players"})
+-- Aba Main
+local mainTab = Window:AddTab({ Title = "Main", Icon = "🏃" })
 
-mainTab:AddSlider({
-    Name = "Dash length",
+mainTab:AddSlider("Dash Length", {
+    Default = 10,
     Min = 10,
     Max = 1000,
-    Default = 10,
-    Increment = 1,
+    Rounding = 0,
     Callback = function(Value)
         LocalPlayer.Character:SetAttribute("DashLength", Value)
     end
 })
 
-mainTab:AddSlider({
-    Name = "Jump Height",
+mainTab:AddSlider("Jump Height", {
+    Default = 10,
     Min = 10,
     Max = 500,
-    Default = 10,
-    Increment = 1,
+    Rounding = 0,
     Callback = function(Value)
         LocalPlayer.Character.Humanoid.JumpPower = Value
     end
 })
 
-local generalTab = Window:MakeTab({Name = "General", Icon = "rbxassetid://4483345998", PremiumOnly = false})
-generalTab:AddSection({Name = "Melhorar FPS"})
+-- Aba General
+local generalTab = Window:AddTab({ Title = "General", Icon = "⚙️" })
 
-generalTab:AddButton({
-    Name = "Ativar FPS Boost",
-    Callback = function()
-        settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
-        game.Lighting.GlobalShadows = false
-        game.Lighting.FogEnd = 9e9
-        game.Lighting.Brightness = 0
-        game.Lighting.ClockTime = 12
-        game.Lighting.Technology = Enum.Technology.Compatibility
+generalTab:AddButton("Ativar FPS Boost", function()
+    settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+    game.Lighting.GlobalShadows = false
+    game.Lighting.FogEnd = 9e9
+    game.Lighting.Brightness = 0
+    game.Lighting.ClockTime = 12
+    game.Lighting.Technology = Enum.Technology.Compatibility
 
-        for _, obj in ipairs(workspace:GetDescendants()) do
-            if obj:IsA("BasePart") then
-                obj.Material = Enum.Material.Plastic
-                obj.Reflectance = 0
-            elseif obj:IsA("Decal") or obj:IsA("Texture") then
-                obj.Transparency = 1
-            end
+    for _, obj in ipairs(workspace:GetDescendants()) do
+        if obj:IsA("BasePart") then
+            obj.Material = Enum.Material.Plastic
+            obj.Reflectance = 0
+        elseif obj:IsA("Decal") or obj:IsA("Texture") then
+            obj.Transparency = 1
         end
-
-        for _, effect in ipairs(game.Lighting:GetChildren()) do
-            if effect:IsA("PostEffect") then
-                effect.Enabled = false
-            end
-        end
-
-        OrionLib:MakeNotification({Name = "FPS Boost", Content = "Melhor desempenho ativado!", Time = 4})
     end
-})
 
-generalTab:AddSection({Name = "Anti AFK"})
+    for _, effect in ipairs(game.Lighting:GetChildren()) do
+        if effect:IsA("PostEffect") then
+            effect.Enabled = false
+        end
+    end
+end)
+
+-- Anti AFK
 local VirtualUser = game:GetService("VirtualUser")
-
 LocalPlayer.Idled:Connect(function()
     if antiAFKEnabled then
         VirtualUser:Button2Down(Vector2.new(), workspace.CurrentCamera.CFrame)
@@ -93,26 +86,16 @@ LocalPlayer.Idled:Connect(function()
     end
 end)
 
-generalTab:AddToggle({
-    Name = "Ativar Anti AFK",
-    Default = false,
-    Callback = function(Value)
-        antiAFKEnabled = Value
-        OrionLib:MakeNotification({
-            Name = "Anti AFK",
-            Content = Value and "Protegido contra kick!" or "Kick por inatividade reativado.",
-            Time = 4
-        })
-    end
-})
+generalTab:AddToggle("Anti AFK", false, function(Value)
+    antiAFKEnabled = Value
+end)
 
-generalTab:AddSection({Name = "Speed"})
-generalTab:AddSlider({
-    Name = "Speed",
+-- Speed
+generalTab:AddSlider("Speed", {
+    Default = 16,
     Min = 1,
     Max = 500,
-    Default = 16,
-    Increment = 1,
+    Rounding = 0,
     Callback = function(Value)
         local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
         if humanoid then
@@ -122,21 +105,20 @@ generalTab:AddSlider({
 })
 
 -- Aimbot
-generalTab:AddSection({Name = "Aimbot"})
+generalTab:AddToggle("Aimbot", false, function(Value)
+    aimbotEnabled = Value
+end)
 
 local function GetClosestEnemy()
-    local closest = nil
-    local shortestDist = FOV
+    local closest, shortestDist = nil, FOV
 
     for _, player in pairs(Players:GetPlayers()) do
         if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("Head") then
             local head = player.Character.Head
             local screenPos, onScreen = Camera:WorldToViewportPoint(head.Position)
-
             if onScreen then
                 local mousePos = UserInputService:GetMouseLocation()
                 local dist = (Vector2.new(screenPos.X, screenPos.Y) - mousePos).Magnitude
-
                 if dist < shortestDist then
                     shortestDist = dist
                     closest = player
@@ -144,7 +126,6 @@ local function GetClosestEnemy()
             end
         end
     end
-
     return closest
 end
 
@@ -166,17 +147,8 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
-generalTab:AddToggle({
-    Name = "Aimbot",
-    Default = false,
-    Callback = function(Value)
-        aimbotEnabled = Value
-    end
-})
-
--- Visual
-local visualTab = Window:MakeTab({Name = "Visual", Icon = "rbxassetid://4483345998", PremiumOnly = false})
-visualTab:AddSection({Name = "ESP"})
+-- Aba Visual
+local visualTab = Window:AddTab({ Title = "Visual", Icon = "👁️" })
 
 local function createHighlight(model, color)
     local highlight = Instance.new("Highlight")
@@ -243,47 +215,34 @@ RunService.Heartbeat:Connect(function()
     if npcESPEnabled then updateNPCESP() end
 end)
 
-visualTab:AddToggle({
-    Name = "ESP Players",
-    Default = false,
-    Callback = function(Value)
-        playerESPEnabled = Value
-        if not Value then
-            for _, plr in pairs(Players:GetPlayers()) do
-                if plr.Character then removeHighlight(plr.Character) end
+visualTab:AddToggle("ESP Players", false, function(Value)
+    playerESPEnabled = Value
+    if not Value then
+        for _, plr in pairs(Players:GetPlayers()) do
+            if plr.Character then removeHighlight(plr.Character) end
+        end
+    end
+end)
+
+visualTab:AddToggle("ESP NPCs", false, function(Value)
+    npcESPEnabled = Value
+    if Value then
+        scanNPCs()
+    else
+        for _, model in pairs(workspace:GetDescendants()) do
+            if model:IsA("Model") and model:FindFirstChild("AuraESP") then
+                removeHighlight(model)
             end
         end
     end
-})
+end)
 
-visualTab:AddToggle({
-    Name = "ESP NPCs",
-    Default = false,
-    Callback = function(Value)
-        npcESPEnabled = Value
-        if Value then
-            scanNPCs()
-        else
-            for _, model in pairs(workspace:GetDescendants()) do
-                if model:IsA("Model") and model:FindFirstChild("AuraESP") then
-                    removeHighlight(model)
-                end
-            end
-        end
-    end
-})
-
-visualTab:AddSection({Name = "Controle FOV"})
-
-visualTab:AddSlider({
-    Name = "Camera FOV",
+visualTab:AddSlider("Camera FOV", {
+    Default = Camera.FieldOfView,
     Min = 1,
     Max = 550,
-    Default = Camera.FieldOfView,
-    Increment = 1,
+    Rounding = 0,
     Callback = function(Value)
         Camera.FieldOfView = Value
     end
 })
-
-OrionLib:Init()
