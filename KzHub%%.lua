@@ -1,83 +1,95 @@
-local a=game.Players.LocalPlayer
-local b=game:GetService("UserInputService")
-local c=game:GetService("TweenService")
-local d=game:GetService("RunService")
-local e=game:GetService("Workspace")
-local f=1
+local a = game.Players.LocalPlayer
+local b = game:GetService("UserInputService")
+local c = game:GetService("TweenService")
+local d = game:GetService("RunService")
+local e = game:GetService("Workspace")
+local f = 1
 
 -- LOADING
 do
-local g=Instance.new("ScreenGui",a.PlayerGui)
-g.Name="KzHubLoading"
-g.IgnoreGuiInset=true
-g.ResetOnSpawn=false
-local h=Instance.new("Frame",g)
-h.Size=UDim2.new(1,0,1,0)
-h.BackgroundColor3=Color3.new(0,0,0)
-h.BorderSizePixel=0
-local i=Instance.new("ImageLabel",h)
-i.Size=UDim2.new(0,96,0,96)
-i.Position=UDim2.new(0.5,-48,0.32,0)
-i.BackgroundTransparency=1
-i.ImageTransparency=1
-i.Image="rbxassetid://71567579053009"
-local j=Instance.new("TextLabel",h)
-j.Size=UDim2.new(1,0,0,70)
-j.Position=UDim2.new(0,0,0.46,0)
-j.BackgroundTransparency=1
-j.Text="Kz Hub X Universal"
-j.Font=Enum.Font.GothamBlack
-j.TextSize=42
-j.TextColor3=Color3.new(1,1,1)
-j.TextStrokeTransparency=0.2
-j.TextXAlignment=Enum.TextXAlignment.Center
-j.TextYAlignment=Enum.TextYAlignment.Center
-j.TextTransparency=1
-local k=Instance.new("TextLabel",h)
-k.Size=UDim2.new(1,0,0,30)
-k.Position=UDim2.new(0,0,0.60,0)
-k.BackgroundTransparency=1
-k.Text="Made By Team KzHub"
-k.Font=Enum.Font.GothamBold
-k.TextSize=22
-k.TextColor3=Color3.new(1,1,1)
-k.TextStrokeTransparency=0.25
-k.TextXAlignment=Enum.TextXAlignment.Center
-k.TextYAlignment=Enum.TextYAlignment.Center
-k.TextTransparency=1
-local l=Instance.new("TextLabel",h)
-l.Size=UDim2.new(1,0,0,26)
-l.Position=UDim2.new(0,0,0.66,0)
-l.BackgroundTransparency=1
-l.Text="Youtube-KzScripts"
-l.Font=Enum.Font.Gotham
-l.TextSize=19
-l.TextColor3=Color3.new(1,1,1)
-l.TextStrokeTransparency=0.35
-l.TextXAlignment=Enum.TextXAlignment.Center
-l.TextYAlignment=Enum.TextYAlignment.Center
-l.TextTransparency=1
-local function m(n,o,p,q)
-	local r=c:Create(n,TweenInfo.new(q,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{[o]=p})
-	r:Play()
-	return r
+    local g = Instance.new("ScreenGui", a.PlayerGui)
+    g.Name = "KzHubLoading"
+    g.IgnoreGuiInset = true
+    g.ResetOnSpawn = false
+    
+    local h = Instance.new("Frame", g)
+    h.Size = UDim2.new(1, 0, 1, 0)
+    h.BackgroundColor3 = Color3.new(0, 0, 0)
+    h.BorderSizePixel = 0
+    
+    local i = Instance.new("ImageLabel", h)
+    i.Size = UDim2.new(0, 96, 0, 96)
+    i.Position = UDim2.new(0.5, -48, 0.25, 0) -- Movido para cima (era 0.32)
+    i.BackgroundTransparency = 1
+    i.ImageTransparency = 1
+    i.Image = "rbxassetid://71567579053009"
+    
+    -- Adicionar corner para tornar a imagem redonda
+    local imageCorner = Instance.new("UICorner", i)
+    imageCorner.CornerRadius = UDim.new(0.5, 0) -- 50% para círculo perfeito
+    
+    local j = Instance.new("TextLabel", h)
+    j.Size = UDim2.new(1, 0, 0, 70)
+    j.Position = UDim2.new(0, 0, 0.42, 0) -- Ajustado para acompanhar a imagem
+    j.BackgroundTransparency = 1
+    j.Text = "Kz Hub X Steal a Brainrot"
+    j.Font = Enum.Font.GothamBlack
+    j.TextSize = 42
+    j.TextColor3 = Color3.new(1, 1, 1)
+    j.TextStrokeTransparency = 0.2
+    j.TextXAlignment = Enum.TextXAlignment.Center
+    j.TextYAlignment = Enum.TextYAlignment.Center
+    j.TextTransparency = 1
+    
+    local k = Instance.new("TextLabel", h)
+    k.Size = UDim2.new(1, 0, 0, 30)
+    k.Position = UDim2.new(0, 0, 0.56, 0) -- Ajustado para acompanhar
+    k.BackgroundTransparency = 1
+    k.Text = "Made By Team KzHub"
+    k.Font = Enum.Font.GothamBold
+    k.TextSize = 22
+    k.TextColor3 = Color3.new(1, 1, 1)
+    k.TextStrokeTransparency = 0.25
+    k.TextXAlignment = Enum.TextXAlignment.Center
+    k.TextYAlignment = Enum.TextYAlignment.Center
+    k.TextTransparency = 1
+    
+    local l = Instance.new("TextLabel", h)
+    l.Size = UDim2.new(1, 0, 0, 26)
+    l.Position = UDim2.new(0, 0, 0.62, 0) -- Ajustado para acompanhar
+    l.BackgroundTransparency = 1
+    l.Text = "Youtube-KzScripts"
+    l.Font = Enum.Font.Gotham
+    l.TextSize = 19
+    l.TextColor3 = Color3.new(1, 1, 1)
+    l.TextStrokeTransparency = 0.35
+    l.TextXAlignment = Enum.TextXAlignment.Center
+    l.TextYAlignment = Enum.TextYAlignment.Center
+    l.TextTransparency = 1
+    
+    local function m(n, o, p, q)
+        local r = c:Create(n, TweenInfo.new(q, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {[o] = p})
+        r:Play()
+        return r
+    end
+    
+    m(i, "ImageTransparency", 0, 0.7)
+    wait(0.3)
+    m(j, "TextTransparency", 0, 0.7)
+    wait(0.1)
+    m(k, "TextTransparency", 0, 0.6)
+    wait(0.05)
+    m(l, "TextTransparency", 0, 0.6)
+    wait(2.1)
+    wait(1.2)
+    m(i, "ImageTransparency", 1, 0.6)
+    m(j, "TextTransparency", 1, 0.6)
+    m(k, "TextTransparency", 1, 0.6)
+    m(l, "TextTransparency", 1, 0.6)
+    wait(0.65)
+    g:Destroy()
 end
-m(i,"ImageTransparency",0,0.7)
-wait(0.3)
-m(j,"TextTransparency",0,0.7)
-wait(0.1)
-m(k,"TextTransparency",0,0.6)
-wait(0.05)
-m(l,"TextTransparency",0,0.6)
-wait(2.1)
-wait(1.2)
-m(i,"ImageTransparency",1,0.6)
-m(j,"TextTransparency",1,0.6)
-m(k,"TextTransparency",1,0.6)
-m(l,"TextTransparency",1,0.6)
-wait(0.65)
-g:Destroy()
-end
+
 
 -- Serviços
 local Players = game:GetService("Players")
