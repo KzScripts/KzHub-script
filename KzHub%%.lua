@@ -32,7 +32,7 @@ do
     j.Size = UDim2.new(1, 0, 0, 70)
     j.Position = UDim2.new(0, 0, 0.42, 0) -- Ajustado para acompanhar a imagem
     j.BackgroundTransparency = 1
-    j.Text = "Kz Hub X Steal a Brainrot"
+    j.Text = "Kz Hub X Universal"
     j.Font = Enum.Font.GothamBlack
     j.TextSize = 42
     j.TextColor3 = Color3.new(1, 1, 1)
